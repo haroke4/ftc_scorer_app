@@ -7,7 +7,6 @@ class MainPage extends StatefulWidget {
   String lang;
 
   MainPage({super.key, required this.lang});
-
   @override
   State<MainPage> createState() => _MainPageState();
 }
@@ -42,9 +41,26 @@ class _MainPageState extends State<MainPage> {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        getButton("Go to main page", () {
-          //here Get.to(Next page)
-        }),
+        Hero(
+          tag: "logo",
+            child: Image.asset("assets/logo.png",
+            width: 200,
+            height: 200,
+            )
+        ),
+        getButton(
+            lang == "kz" ? "(KZ)Score Calculator" : "Калькулятор очков для матча",
+            () {
+              //here Get.to(Next page)
+            }
+        ),
+        const SizedBox(height: 10),
+        getButton(
+            lang == "kz" ? "(KZ)Game field definitions" : "Термины на игровом поле",
+            () {
+              //here Get.to(Next page)
+            }
+        ),
         const SizedBox(height: 10),
         getButton(
           lang == "kz" ? "Тілді таңдау" : "Выбрать язык",
@@ -54,7 +70,6 @@ class _MainPageState extends State<MainPage> {
 
               builder: (BuildContext context) {
                 return AlertDialog(
-
                   backgroundColor: const Color.fromRGBO(0, 0, 0, 0.1),
                   content: getLanguageButtons(),
                 );

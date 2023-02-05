@@ -1,57 +1,53 @@
 import 'dart:async';
 
+import 'package:animated_splash_screen/animated_splash_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:ftc_scorer_app/pages/main_page.dart';
 import 'package:get/get.dart';
+import 'package:page_transition/page_transition.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'colors.dart';
 
-void main() {
-  runApp(const MyApp());
+late String lang;
+late SharedPreferences prefs;
+
+Future<void> main() async {
+  prefs = await SharedPreferences.getInstance();
+  lang = prefs.getString("lang") ?? "kz";
+  runApp(MyApp());
 }
+
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return const GetMaterialApp(
-      title: 'FTC Scorer app by Bolt.m3',
-      home: SplashScreen(),
-    );
-  }
-}
-
-class SplashScreen extends StatefulWidget{
-  const SplashScreen({super.key});
-  @override
-  State<SplashScreen> createState() => _SplashScreenState();
-}
-
-class _SplashScreenState extends State<SplashScreen> {
-
-  @override
-  void initState(){
-    super.initState();
-    asyncInitState();
-  }
-
-  void asyncInitState() async{
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await Future.delayed(const Duration(milliseconds: 200));
-    String lang = prefs.getString("lang") ?? "kz";
-    Get.off(MainPage(lang: lang));
-  }
+  MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: darkGrey,
-      body: Center(
-        child: Image.asset("assets/logo.png"),
-      ),
+    return ScreenUtilInit(
+      designSize: const Size(360, 690),
+      minTextAdapt: true,
+      splitScreenMode: false,
+      builder: (BuildContext context, Widget? child) {
+        return GetMaterialApp(
+            debugShowCheckedModeBanner: false,
+            title: 'FTC Scorer app by Bolt.m3',
+            home: SafeArea(
+              child: AnimatedSplashScreen(
+                duration: 250,
+                splash: Hero(
+                    tag: "logo",
+                    child: Image.asset("assets/logo.png")
+                ),
+                nextScreen: MainPage(lang: lang),
+                splashTransition: SplashTransition.fadeTransition,
+                pageTransitionType: PageTransitionType.fade,
+                backgroundColor: darkGrey,
+              ),
+            )
+        );
+      },
     );
   }
 }
